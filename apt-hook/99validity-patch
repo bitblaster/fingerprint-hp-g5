@@ -1,0 +1,6 @@
+// Local hook: re-applies fingerprint patches for HP EliteBook G5 (138a:00ab)
+// after each python3-validity package upgrade.
+// Documentation: /usr/local/lib/validity-patch/README.md
+DPkg::Post-Invoke {
+    "if dpkg -s python3-validity >/dev/null 2>&1; then echo ''; echo '[validity-patch] Re-applying patches for fingerprint sensor 138a:00ab (HP EliteBook G5)...'; python3 /usr/local/lib/validity-patch/patch.py && systemctl restart python3-validity 2>/dev/null && echo '[validity-patch] OK' || echo '[validity-patch] WARNING: patch failed'; fi";
+};

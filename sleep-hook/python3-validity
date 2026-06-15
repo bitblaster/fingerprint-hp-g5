@@ -1,0 +1,20 @@
+#!/bin/bash
+# /lib/systemd/system-sleep/python3-validity
+# Restarts the fingerprint driver after resume (chip 0xd51 / 138a:00ab)
+# Executed synchronously before the system becomes operational.
+
+case $1 in
+    post)
+        logger -t python3-validity-sleep "Resume: restarting fingerprint driver..."
+        systemctl restart python3-validity.service
+
+        # Wait for the service to become active (max 10s)
+        for i in $(seq 1 20); do
+            if systemctl is-active --quiet python3-validity.service; then
+                logger -t python3-validity-sleep "Driver ready after ${i} half-seconds"
+                break
+            fi
+            sleep 0.5
+        done
+        ;;
+esac
